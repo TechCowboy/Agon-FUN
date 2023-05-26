@@ -13,7 +13,7 @@ your code, then there is a header.
       jp start
       ; MOS Header
       .align 64
-      .db "MOS", 0, 1
+      .db "MOS", 0, 0   ; use .db "MOS", 0, 1 for ADL executibles
 start:
       ; save registers
       
