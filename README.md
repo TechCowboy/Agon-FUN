@@ -2,6 +2,14 @@
 Programs written to run on the Agon Light 2
 All the programs require a minimum of MOS 1.03 and VDP 1.03
 
+## z88dk
+WORK IN PROGRESS: 
+Additional files to add to z88dk directory for Agon Light support
+This will not support ADL mode, just Z80 (short) mode
+
+## HelloWorld
+Gotta start somewhere - first program that will be compiled once I get the compiler going
+
 ## Generic Info
 
 ## File Format
@@ -81,12 +89,6 @@ The contents below was taken from mos_api.inc
     bc = print 'bc' characters, if zero, then use delimiter
     a  = deliminter if bc is zero
 
-## z88dk
-Additional files to add to z88dk directory for Agon Light support
-This does not support ADL mode, just Z80 (short) mode
-
-## HelloWorld
-Gotta start somewhere
 
 ## Resources
 
