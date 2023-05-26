@@ -9,7 +9,7 @@ All the programs require a minimum of MOS 1.03 and VDP 1.03
 First few bytes have a jump instruction to the start of
 your code, then there is a header.
 
-``
+`
       jp start
       ; MOS Header
       .align 64
@@ -22,7 +22,7 @@ stop:
       
       ld hl, 0  ; no error
       ret
-`` 
+` 
 
 ## MOS API
 
@@ -37,7 +37,7 @@ stop:
 https://github.com/breakintoprogram/agon-docs/wiki/MOS-API
 The contents below was taken from mos_api.inc    
 
-``
+`
 	; MOS high level functions
 	;
 	mos_getkey:		EQU	00h
@@ -69,7 +69,7 @@ The contents below was taken from mos_api.inc
 	mos_fread:		EQU	1Ah
 	mos_fwrite:		EQU	1Bh
 	mos_flseek:		EQU	1Ch
-``
+`
 
 ### $10 VDU Character
     Output a single character to the VDP
