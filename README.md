@@ -9,7 +9,7 @@ All the programs require a minimum of MOS 1.03 and VDP 1.03
 First few bytes have a jump instruction to the start of
 your code, then there is a header.
 
-`
+```
       jp start
       ; MOS Header
       .align 64
@@ -22,7 +22,7 @@ stop:
       
       ld hl, 0  ; no error
       ret
-` 
+``` 
 
 ## MOS API
 
@@ -34,10 +34,10 @@ stop:
     Value in accumuator
     for parameters see here:
     
-https://github.com/breakintoprogram/agon-docs/wiki/MOS-API
+https://github.com/breakintoprogram/agon-docs/wiki/MOS-API </br>
 The contents below was taken from mos_api.inc    
 
-`
+```
 	; MOS high level functions
 	;
 	mos_getkey:		EQU	00h
@@ -69,17 +69,17 @@ The contents below was taken from mos_api.inc
 	mos_fread:		EQU	1Ah
 	mos_fwrite:		EQU	1Bh
 	mos_flseek:		EQU	1Ch
-`
+```
 
 ### $10 VDU Character
-    Output a single character to the VDP
+    Output a single character to the VDP</br>
     accumulator contains character to output
     
 ### $18 VDU String (MOS 1.03 or above)
-    Output a stream of characters to the VDP
-    hl - address of characters
-    bc = print 'bc' characters, if zero, then use delimiter
-    a  = deliminter if bc is zero
+    Output a stream of characters to the VDP</br>
+    hl - address of characters</br>
+    bc = print 'bc' characters, if zero, then use delimiter</br>
+    a  = deliminter if bc is zero</br>
 
 ## z88dk
 Additional files to add to z88dk directory for Agon Light support
@@ -92,9 +92,11 @@ Gotta start somewhere
 
 ### How to create a new target
 https://github.com/z88dk/z88dk/wiki/Classic--Homebrew
+https://github.com/z88dk/z88dk/wiki/Classic--Retargetting
 
 ### Assembly tutorial for Agon
 https://www.youtube.com/watch?v=75MTDGiehLs
+
 
 
 
