@@ -72,14 +72,14 @@ The contents below was taken from mos_api.inc
 ```
 
 ### $10 VDU Character
-    Output a single character to the VDP</br>
+    Output a single character to the VDP
     accumulator contains character to output
     
 ### $18 VDU String (MOS 1.03 or above)
-    Output a stream of characters to the VDP</br>
-    hl - address of characters</br>
-    bc = print 'bc' characters, if zero, then use delimiter</br>
-    a  = deliminter if bc is zero</br>
+    Output a stream of characters to the VDP
+    hl - address of characters
+    bc = print 'bc' characters, if zero, then use delimiter
+    a  = deliminter if bc is zero
 
 ## z88dk
 Additional files to add to z88dk directory for Agon Light support
