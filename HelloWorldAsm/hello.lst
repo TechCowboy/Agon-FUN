@@ -1,0 +1,55 @@
+PC     Output            Line Source
+040000                   0001 
+040000                   0002     .assume adl=0
+040000                   0003 
+040000                   0004     .org $4000
+004000                   0005 
+004000 C3 45 40          0006     jp      start
+004003                   0007 
+004003 FF FF FF FF FF FF 0008     .align 64
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF                
+004040                   0009     ; MOS Header
+004040 4D 4F 53 00 00    0010     db "MOS",0,0
+004045                   0011 
+004045                   0012 
+004045                   0013 
+004045                   0014 start:
+004045 F5                0015     push af
+004046 C5                0016     push bc
+004047 D5                0017     push de
+004048 DD E5             0018     push ix
+00404A FD E5             0019     push iy
+00404C                   0020 
+00404C                   0021 
+00404C 21 60 40          0022     ld hl,hello_str
+00404F 01 00 00          0023     ld bc, 0
+004052 3E 00             0024     ld a, 0
+004054                   0025 
+004054 DF                0026     rst 0x18
+004055                   0027 
+004055 FD E1             0028     pop iy
+004057 DD E1             0029     pop ix
+004059 D1                0030     pop de
+00405A C1                0031     pop bc
+00405B F1                0032     pop af
+00405C                   0033 
+00405C 21 00 00          0034     ld hl, 0
+00405F                   0035 
+00405F C9                0036     ret
+004060                   0037 
+004060                   0038 hello_str:
+004060 48 65 6C 6C 6F 2C 0039     db "Hello, World!\r\n",0
+       20 57 6F 72 6C 64 
+       21 0D 0A 00       
+004070                   0040 
+004070                   0041 
+004070                   0042 

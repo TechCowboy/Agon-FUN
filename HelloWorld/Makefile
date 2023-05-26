@@ -45,7 +45,7 @@ endif
 
 TNFS_SERVER ?= $(shell echo $$TNFS_SERVER)
 TNFS_SHARE  ?= $(shell echo $$TNFS_SHARE)
-TNFS_DIR    ?= ADAM
+TNFS_DIR    ?= AGON
 OS          ?= $(shell echo $$OS)
 
 COLEM_EXEC  ?= $(shell echo $$COLEM_EXEC)
@@ -88,6 +88,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS)
+	z88dk-dis -o 0x0000 -x hello.map hello.bin > hello.lst
 
 # c source
 $(BUILD_DIR)/%.c.o: %.c
@@ -110,19 +111,20 @@ ifeq ('$(PROJECT_DEVICE)','adam')
 	$(COLEM_WINE) "$(COLEM_EXEC)" -ntsc -adam $(TARGET_EXEC).ddp
 endif
 ifeq ('$(PROJECT_DEVICE)','apple')
-	$(WINE_REQUIRED) "$(APPEM_EXEC)" -d1 $(TARGET_EXEC).po
+	$(APPEM_WINE) "$(APPEM_EXEC)" -d1 $(TARGET_EXEC).po
 endif
 ifeq ('$(PROJECT_DEVICE)','nabu')
 	cp ./$(TARGET_EXEC) "$(NABU_CACHE)/000001.nabu"
 	cd "$(NABEM_PATH)"; \
-	$(WINE_REQUIRED) "$(NABEM_PATH)/$(NABEM_EXEC)" nabupc -window -kbd nabu_hle -hcca null_modem -bitb socket.127.0.0.1:5816
+	$(NABUEM_WINE) "$(NABEM_PATH)/$(NABEM_EXEC)" nabupc -window -kbd nabu_hle -hcca null_modem -bitb socket.127.0.0.1:5816
 endif
 ifeq ('$(PROJECT_DEVICE)', 'agon')
+	cp ./$(TARGET_EXEC)$(EXTENSION) $(AGONEM_PATH)
 	cd "$(AGONEM_PATH)"; \
-	$(WINE_REQUIRED) "$(AGONEM_EXEC)"
+	cargo run &
 endif
 
-tnfs: $(TARGET_EXEC).ddp 
+tnfs: $(TARGET_EXEC)$(EXTENSION) 
 ifneq ('$(TNFS_SERVER)','')
 
 ifneq ('$(OS)','')
@@ -135,7 +137,6 @@ else
 	$(info *** No TNFS server environment variable set ***)
 	$(info ***********************************************)
 endif
-
 
 -include $(DEPS)
 
