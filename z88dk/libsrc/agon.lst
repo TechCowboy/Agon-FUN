@@ -1,0 +1,3 @@
+target/agon/stdio/fputc_cons_native
+target/agon/stdio/fgetc_cons_native
+@stdio/stdio.lst
