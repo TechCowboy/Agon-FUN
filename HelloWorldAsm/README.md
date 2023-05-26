@@ -1,5 +1,6 @@
 # HelloWorld Assembly
 
-Hello World example
+WORK IN PROGRESS
+Hello World example using just Z80 code
 
 
