@@ -15,25 +15,36 @@ See readme within directories for details
 
 ## Generic Info
 
-## File Format
+## File Header
 
-First few bytes have a jump instruction to the start of
-your code, then there is a header.
+The agon executible files have a header for either mixed mode or ez80 mode
+```
+; mixed mode
+    jp      start
+;
+; The header stuff is from byte 64 onwards
+;
+    align	64
+    
+    ;INCLUDE "crt/classic/crt_z80_rsts.asm"
+    align 64
+mos_signature:
+    db "MOS",0,0
+```
 
 ```
-      jp start
-      ; MOS Header
-      .align 64
-      .db "MOS", 0, 0   ; use .db "MOS", 0, 1 for ADL executibles
-start:
-      ; save registers
-      
-stop:
-      ; restore registers
-      
-      ld hl, 0  ; no error
-      ret
-``` 
+; ez80 mode
+    jp      start
+;
+; The header stuff is from byte 64 onwards
+;
+    align	64
+    
+    ;INCLUDE "crt/classic/crt_z80_rsts.asm"
+    align 64
+mos_signature:
+    db "MOS",0,1
+```
 
 ## MOS API
 
