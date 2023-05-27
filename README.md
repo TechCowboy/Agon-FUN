@@ -1,5 +1,5 @@
 # Agon-FUN
-Programs written to run on the Agon Light 2
+Programs written to run on the Agon Light<br>
 All the programs require a minimum of MOS 1.03 and VDP 1.03
 
 ## z88dk
@@ -9,6 +9,9 @@ This will not support ADL mode, just Z80 (short) mode
 
 ## HelloWorld
 Gotta start somewhere - first program that will be compiled once I get the compiler going
+
+## HelloWorldASM and HelloWorldASMADL
+See readme within directories for details
 
 ## Generic Info
 
