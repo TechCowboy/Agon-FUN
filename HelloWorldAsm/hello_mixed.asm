@@ -68,20 +68,11 @@ start:
 
     ; save the registers
 
-    .db 0x5b        ; lil prefix
-    push ix
-
-    .db 0x5b        ; lil prefix 
-    push iy		    ; Preserve IY
-
-    .db 0x5b        ; lil prefix
-    push af	    	; Preserve the rest of the registers
-
-    .db 0x5b        ; lil prefix
-    push bc
-
-    .db 0x5b        ; lil prefix
-    push de
+    push.lil ix
+    push.lil iy	
+    push.lil af	   
+    push.lil bc
+    push.lil de
 
     ; ***********************
     ; the z80 application
@@ -101,26 +92,18 @@ start:
 
     ; Restore the registers
 
-    .db 0x5b        ; lil prefix
-    pop de
+    pop.lil de
+    pop.lil bc
+    pop.lil af
+    pop.lil iy	    	; Get the preserved SPS
+    pop.lil ix	
 
-    .db 0x5b        ; lil prefix
-    pop bc
+    ld.lil hl, 0        ; return code to MOS
 
-    .db 0x5b        ; lil prefix
-    pop af
-
-    .db 0x5b        ; lil prefix
-    pop iy	    	; Get the preserved SPS
-
-    .db 0x5b        ; lil prefix
-    pop ix	
-
-    .db 0x49        ; lis prefix
-    ld hl, 0
-
-    .db 0x49        ; lis prefix
-    ret 			; Return to MOS
+    ret.l 			    ; Return to MOS
 
 hello_str:
     db "Hello, World!\r\nPress any key to continue\r\n",0
+
+
+

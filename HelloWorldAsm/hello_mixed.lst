@@ -114,62 +114,42 @@ PC     Output            Line Source
 000144                   0068 
 000144                   0069     ; save the registers
 000144                   0070 
-000144 5B                0071     .db 0x5b        ; lil prefix
-000145 DD E5             0072     push ix
-000147                   0073 
-000147 5B                0074     .db 0x5b        ; lil prefix
-000148 FD E5             0075     push iy		    ; Preserve IY
-00014A                   0076 
-00014A 5B                0077     .db 0x5b        ; lil prefix
-00014B F5                0078     push af	    	; Preserve the rest of the registers
-00014C                   0079 
-00014C 5B                0080     .db 0x5b        ; lil prefix
-00014D C5                0081     push bc
-00014E                   0082 
-00014E 5B                0083     .db 0x5b        ; lil prefix
-00014F D5                0084     push de
-000150                   0085 
-000150                   0086     ; ***********************
-000150                   0087     ; the z80 application
-000150                   0088     ; ***********************
-000150                   0089 
-000150 21 6E 01          0090     ld hl,hello_str
-000153 01 00 00          0091     ld bc, 0
-000156 3E 00             0092     ld a,0
-000158 DF                0093     rst 0x18        ; print string
-000159                   0094 
-000159 3E 00             0095     ld a,0
-00015B CF                0096     rst 0x08        ; get a character
-00015C                   0097 
-00015C                   0098     ; ***********************
-00015C                   0099     ; end z80 application
-00015C                   0100     ; ***********************
-00015C                   0101 
-00015C                   0102     ; Restore the registers
-00015C                   0103 
-00015C 5B                0104     .db 0x5b        ; lil prefix
-00015D D1                0105     pop de
-00015E                   0106 
-00015E 5B                0107     .db 0x5b        ; lil prefix
-00015F C1                0108     pop bc
-000160                   0109 
-000160 5B                0110     .db 0x5b        ; lil prefix
-000161 F1                0111     pop af
-000162                   0112 
-000162 5B                0113     .db 0x5b        ; lil prefix
-000163 FD E1             0114     pop iy	    	; Get the preserved SPS
-000165                   0115 
-000165 5B                0116     .db 0x5b        ; lil prefix
-000166 DD E1             0117     pop ix
-000168                   0118 
-000168 49                0119     .db 0x49        ; lis prefix
-000169 21 00 00          0120     ld hl, 0
-00016C                   0121 
-00016C 49                0122     .db 0x49        ; lis prefix
-00016D C9                0123     ret 			; Return to MOS
-00016E                   0124 
-00016E                   0125 hello_str:
-00016E 48 65 6C 6C 6F 2C 0126     db "Hello, World!\r\nPress any key to continue\r\n",0
+000144 5B DD E5          0071     push.lil ix
+000147 5B FD E5          0072     push.lil iy
+00014A 5B F5             0073     push.lil af
+00014C 5B C5             0074     push.lil bc
+00014E 5B D5             0075     push.lil de
+000150                   0076 
+000150                   0077     ; ***********************
+000150                   0078     ; the z80 application
+000150                   0079     ; ***********************
+000150                   0080 
+000150 21 6F 01          0081     ld hl,hello_str
+000153 01 00 00          0082     ld bc, 0
+000156 3E 00             0083     ld a,0
+000158 DF                0084     rst 0x18        ; print string
+000159                   0085 
+000159 3E 00             0086     ld a,0
+00015B CF                0087     rst 0x08        ; get a character
+00015C                   0088 
+00015C                   0089     ; ***********************
+00015C                   0090     ; end z80 application
+00015C                   0091     ; ***********************
+00015C                   0092 
+00015C                   0093     ; Restore the registers
+00015C                   0094 
+00015C 5B D1             0095     pop.lil de
+00015E 5B C1             0096     pop.lil bc
+000160 5B F1             0097     pop.lil af
+000162 5B FD E1          0098     pop.lil iy	    	; Get the preserved SPS
+000165 5B DD E1          0099     pop.lil ix
+000168                   0100 
+000168 5B 21 00 00 00    0101     ld.lil hl, 0        ; return code to MOS
+00016D                   0102 
+00016D 49 C9             0103     ret.l 			    ; Return to MOS
+00016F                   0104 
+00016F                   0105 hello_str:
+00016F 48 65 6C 6C 6F 2C 0106     db "Hello, World!\r\nPress any key to continue\r\n",0
        20 57 6F 72 6C 64 
        21 0D 0A 50 72 65 
        73 73 20 61 6E 79 
@@ -177,3 +157,6 @@ PC     Output            Line Source
        6F 20 63 6F 6E 74 
        69 6E 75 65 0D 0A 
        00                
+00019A                   0107 
+00019A                   0108 
+00019A                   0109 

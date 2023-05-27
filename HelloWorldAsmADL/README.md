@@ -1,5 +1,5 @@
 # HelloWorld Assembly ADL version
 
-Hello World example using Address Data Long
+Hello World example assuming Address Data Long
 
 

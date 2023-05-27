@@ -25,6 +25,9 @@ start:
 
     rst.lil 0x18
 
+    ld a, 0
+    rst.lil 0x08
+
     pop iy
     pop ix
     pop de
@@ -36,7 +39,8 @@ start:
     ret
 
 hello_str:
-    db "Hello, World!\r\n",0
+    db "Hello, World!\r\nPress any key\r\n",0
+
 
 
 

@@ -51,13 +51,90 @@ ENDIF
 
     org    	CRT_ORG_CODE
 
-
 IF CRT_ORG_CODE = 0x0000
     jp      start
-    INCLUDE "crt/classic/crt_z80_rsts.asm"
+    ds	5
+
+rst_08:		
+    db 0x49 
+    rst 08h				; API call
+    ret
+    ds 	5
+    
+rst_10:		
+    db 0x49    
+    rst 10h				; Output
+    ret
+    ds	5
+    
+rst_18:		
+    db 0x49 
+    rst	18h				; Block Output
+    ret
+    ds	5
+    
+rst_20:		
+    ds	8
+
+rst_28:		
+    ds	8
+
+rst_30:		
+    ds	8	
+
+;	
+; The NMI interrupt vector (not currently used by AGON)
+;
+
+rst_38:		
+    ei
+    reti
+;
+; The header stuff is from byte 64 onwards
+;
+    align	64
+    
+    ;INCLUDE "crt/classic/crt_z80_rsts.asm"
+    align 64
+mos_signature:
+    db "MOS",0,0
 ENDIF
 
 start:
+
+    ; Found out from the BBC code that you
+    ; need to preserve the registers in ADL form
+    ; I've written this so it works with
+    ; assemblers that only know z80 opcodes
+
+    ; save the registers
+
+    db 0x5b        ; lil prefix
+    push ix
+
+    db 0x5b        ; lil prefix 
+    push iy		    ; Preserve IY
+
+    db 0x5b        ; lil prefix
+    push af	    	; Preserve the rest of the registers
+
+    db 0x5b        ; lil prefix
+    push bc
+
+    db 0x5b        ; lil prefix
+    push de
+
+    ; *****************************************
+    ; TESTING
+    ; *****************************************
+    ld hl, mos_signature
+    ld bc, 0
+    ld a,0
+    rst 0x18        ; print string
+    ; *****************************************
+    ; END TESTING
+    ; *****************************************
+
     INCLUDE "crt/classic/crt_start_eidi.inc"
     INCLUDE "crt/classic/crt_init_sp.asm"
     ; Make room for the atexit() stack
@@ -92,3 +169,26 @@ ELSE
     defc __crt_model = 1
 ENDIF
     INCLUDE	"crt/classic/crt_section.asm"
+
+    ; Restore the registers
+
+    db 0x5b        ; lil prefix
+    pop de
+
+    db 0x5b        ; lil prefix
+    pop bc
+
+    db 0x5b        ; lil prefix
+    pop af
+
+    db 0x5b        ; lil prefix
+    pop iy	    	; Get the preserved SPS
+
+    db 0x5b        ; lil prefix
+    pop ix	
+
+    db 0x49        ; lis prefix
+    ld hl, 0
+
+    db 0x49        ; lis prefix
+    ret 			; Return to MOS
