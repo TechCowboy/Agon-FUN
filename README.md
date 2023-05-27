@@ -38,13 +38,12 @@ stop:
     Reset the eZ80
 
 ### RST $08
-    MOS Command
-    Value in accumuator
-    for parameters see here:
-    
 https://github.com/breakintoprogram/agon-docs/wiki/MOS-API </br>
-The contents below was taken from mos_api.inc    
+The contents below was taken from mos_api.inc   
 
+    MOS Command
+    Function is value in accumuator
+    for parameters see here:
 ```
 	; MOS high level functions
 	;
