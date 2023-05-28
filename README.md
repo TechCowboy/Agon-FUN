@@ -15,7 +15,7 @@ See readme within directories for details
 
 ## Generic Info
 
-## File Header
+## File Header / Program Skeleton
 
 The agon executible files have a header for either mixed mode or ez80 mode
 ```
@@ -24,12 +24,54 @@ The agon executible files have a header for either mixed mode or ez80 mode
 ;
 ; The header stuff is from byte 64 onwards
 ;
-    align	64
-    
-    ;INCLUDE "crt/classic/crt_z80_rsts.asm"
     align 64
+
 mos_signature:
     db "MOS",0,0
+    
+    ; save the registers
+    
+    db 0x5b        ; lil prefix
+    push ix
+
+    db 0x5b        ; lil prefix 
+    push iy		    
+
+    db 0x5b        ; lil prefix
+    push af	    
+
+    db 0x5b        ; lil prefix
+    push bc
+
+    db 0x5b        ; lil prefix
+    push de
+    
+    ;-----------------
+    ; do z80 stuff
+    ;-----------------
+    
+    ; Restore the registers
+
+    db 0x5b        ; lil prefix
+    pop de
+
+    db 0x5b        ; lil prefix
+    pop bc
+
+    db 0x5b        ; lil prefix
+    pop af
+
+    db 0x5b        ; lil prefix
+    pop iy	    	
+
+    db 0x5b        ; lil prefix
+    pop ix	
+
+    db 0x49        ; lis prefix
+    ld hl, 0  
+
+    db 0x49        ; lis prefix
+    ret 	   ; Return to MOS
 ```
 
 ```
@@ -38,12 +80,33 @@ mos_signature:
 ;
 ; The header stuff is from byte 64 onwards
 ;
-    align	64
-    
-    ;INCLUDE "crt/classic/crt_z80_rsts.asm"
+
     align 64
+
 mos_signature:
     db "MOS",0,1
+start:
+
+    push af
+    push bc
+    push de
+    push ix 
+    push iy
+    
+    ;-----------------
+    ; do z80 stuff
+    ;-----------------
+    
+    pop iy
+    pop ix
+    pop de
+    pop bc
+    pop af
+
+    ld hl, 0
+
+    ret
+
 ```
 
 ## MOS API
