@@ -172,7 +172,13 @@ The contents below was taken from mos_api.inc
 https://github.com/z88dk/z88dk/wiki/Classic--Homebrew </br>
 https://github.com/z88dk/z88dk/wiki/Classic--Retargetting
 
-### Assembly tutorial for Agon
+### Assembler
+https://github.com/envenomator/agon-ez80asm
+
+### Agon Emulator
+https://github.com/astralaster/agon-light-emulator
+
+### Assembly tutorial for Agon ez80 assembler
 https://www.youtube.com/watch?v=75MTDGiehLs
 
 
