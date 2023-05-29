@@ -95,7 +95,7 @@ start:
     pop.lil de
     pop.lil bc
     pop.lil af
-    pop.lil iy	    	; Get the preserved SPS
+    pop.lil iy	    	
     pop.lil ix	
 
     ld.lil hl, 0        ; return code to MOS

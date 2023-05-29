@@ -113,10 +113,10 @@ start:
     push ix
 
     db 0x5b        ; lil prefix 
-    push iy		    ; Preserve IY
+    push iy		    
 
     db 0x5b        ; lil prefix
-    push af	    	; Preserve the rest of the registers
+    push af	    	
 
     db 0x5b        ; lil prefix
     push bc
@@ -124,16 +124,7 @@ start:
     db 0x5b        ; lil prefix
     push de
 
-    ; *****************************************
-    ; TESTING
-    ; *****************************************
-    ld hl, mos_signature
-    ld bc, 0
-    ld a,0
-    rst 0x18        ; print string
-    ; *****************************************
-    ; END TESTING
-    ; *****************************************
+
 
     INCLUDE "crt/classic/crt_start_eidi.inc"
     INCLUDE "crt/classic/crt_init_sp.asm"
@@ -149,6 +140,18 @@ ELSE
 ENDIF
 
     ; Entry to the user code
+
+    ; *****************************************
+    ; TESTING
+    ; *****************************************
+    ld hl, mos_signature
+    ld bc, 0
+    ld a,0
+    rst 0x18        ; print string
+    ; *****************************************
+    ; END TESTING
+    ; *****************************************
+
     call    _main
     ; Exit code is in hl
 cleanup:
@@ -182,7 +185,7 @@ ENDIF
     pop af
 
     db 0x5b        ; lil prefix
-    pop iy	    	; Get the preserved SPS
+    pop iy	    
 
     db 0x5b        ; lil prefix
     pop ix	
@@ -191,4 +194,4 @@ ENDIF
     ld hl, 0
 
     db 0x49        ; lis prefix
-    ret 			; Return to MOS
+    ret 		   ; Return to MOS

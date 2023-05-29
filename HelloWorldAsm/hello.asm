@@ -72,10 +72,10 @@ start:
     push ix
 
     .db 0x5b        ; lil prefix 
-    push iy		    ; Preserve IY
+    push iy		    ; 
 
     .db 0x5b        ; lil prefix
-    push af	    	; Preserve the rest of the registers
+    push af	    	; 
 
     .db 0x5b        ; lil prefix
     push bc
@@ -111,7 +111,7 @@ start:
     pop af
 
     .db 0x5b        ; lil prefix
-    pop iy	    	; Get the preserved SPS
+    pop iy	    	; 
 
     .db 0x5b        ; lil prefix
     pop ix	
