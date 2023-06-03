@@ -168,7 +168,7 @@ The contents below was taken from mos_api.inc
 
 ## Resources
 
-### How to create a new target
+### How to create a new target on z88dk
 https://github.com/z88dk/z88dk/wiki/Classic--Homebrew </br>
 https://github.com/z88dk/z88dk/wiki/Classic--Retargetting
 
