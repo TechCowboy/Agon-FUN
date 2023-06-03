@@ -10,7 +10,7 @@ This will not support ADL mode, just Z80 (short) mode
 ## HelloWorld
 Gotta start somewhere - first program that will be compiled once I get the compiler going
 
-## HelloWorldASM and HelloWorldASMADL
+## Z80 and eZ80
 See readme within directories for details
 
 ## Generic Info

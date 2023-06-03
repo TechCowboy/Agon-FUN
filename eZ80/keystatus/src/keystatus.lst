@@ -1,0 +1,320 @@
+PC     Output            Line Source
+040000                   0001 
+040000                   0002     ASSUME adl=1
+040000                   0003 
+040000                   0004 mos_getkey:		    EQU	00h
+040000                   0005 mos_load:		    EQU	01h
+040000                   0006 mos_save:		    EQU	02h
+040000                   0007 mos_cd:			    EQU	03h
+040000                   0008 mos_dir:		    EQU	04h
+040000                   0009 mos_del:		    EQU	05h
+040000                   0010 mos_ren:		    EQU	06h
+040000                   0011 mos_mkdir:		    EQU	07h
+040000                   0012 mos_sysvars:	    EQU	08h
+040000                   0013 mos_editline:	    EQU	09h
+040000                   0014 mos_fopen:		    EQU	0Ah
+040000                   0015 mos_fclose:		    EQU	0Bh
+040000                   0016 mos_fgetc:		    EQU	0Ch
+040000                   0017 mos_fputc:		    EQU	0Dh
+040000                   0018 mos_feof:		    EQU	0Eh
+040000                   0019 mos_getError:	    EQU	0Fh
+040000                   0020 mos_oscli:		    EQU	10h
+040000                   0021 mos_copy:		    EQU	11h
+040000                   0022 mos_getrtc:		    EQU	12h
+040000                   0023 mos_setrtc:		    EQU	13h
+040000                   0024 mos_setintvector:	EQU	14h
+040000                   0025 mos_uopen:		    EQU	15h
+040000                   0026 mos_uclose:		    EQU	16h
+040000                   0027 mos_ugetc:		    EQU	17h
+040000                   0028 mos_uputc:		    EQU 18h
+040000                   0029 mos_getfil:		    EQU	19h
+040000                   0030 mos_fread:		    EQU	1Ah
+040000                   0031 mos_fwrite:		    EQU	1Bh
+040000                   0032 mos_flseek:		    EQU	1Ch
+040000                   0033 
+040000                   0034 sysvar_time:		    EQU	00h	; 4: Clock timer in centiseconds (incremented by 2 every VBLANK)
+040000                   0035 sysvar_vpd_pflags:	    EQU	04h	; 1: Flags to indicate completion of VDP commands
+040000                   0036 sysvar_keyascii:	    EQU	05h	; 1: ASCII keycode, or 0 if no key is pressed
+040000                   0037 sysvar_keymods:		    EQU	06h	; 1: Keycode modifiers
+040000                   0038 sysvar_cursorX:		    EQU	07h	; 1: Cursor X position
+040000                   0039 sysvar_cursorY:		    EQU	08h	; 1: Cursor Y position
+040000                   0040 sysvar_scrchar:		    EQU	09h	; 1: Character read from screen
+040000                   0041 sysvar_scrpixel:	    EQU	0Ah	; 3: Pixel data read from screen (R,B,G)
+040000                   0042 sysvar_audioChannel:	EQU	0Dh	; 1: Audio channel
+040000                   0043 sysvar_audioSuccess:	EQU	0Eh	; 1: Audio channel note queued (0 = no, 1 = yes)
+040000                   0044 sysvar_scrWidth:	    EQU	0Fh	; 2: Screen width in pixels
+040000                   0045 sysvar_scrHeight:	    EQU	11h	; 2: Screen height in pixels
+040000                   0046 sysvar_scrCols:		    EQU	13h	; 1: Screen columns in characters
+040000                   0047 sysvar_scrRows:		    EQU	14h	; 1: Screen rows in characters
+040000                   0048 sysvar_scrColours:	    EQU	15h	; 1: Number of colours displayed
+040000                   0049 sysvar_scrpixelIndex:	EQU	16h	; 1: Index of pixel data read from screen
+040000                   0050 sysvar_vkeycode:	    EQU	17h	; 1: Virtual key code from FabGL
+040000                   0051 sysvar_vkeydown		    EQU	18h	; 1: Virtual key state from FabGL (0=up, 1=down)
+040000                   0052 sysvar_vkeycount:	    EQU	19h	; 1: Incremented every time a key packet is received
+040000                   0053 sysvar_rtc:		        EQU	1Ah	; 8: Real time clock data
+040000                   0054 sysvar_keydelay:	    EQU	22h	; 2: Keyboard repeat delay
+040000                   0055 sysvar_keyrate:		    EQU	24h	; 2: Keyboard repeat reat
+040000                   0056 sysvar_keyled:		    EQU	26h	; 1: Keyboard LED status
+040000                   0057 sysvar_scrMode:		    EQU	27h	; 1: Screen mode
+040000                   0058 
+040000                   0059 vdu_clear:              EQU 12  ; clear screen
+040000                   0060 vdu_home_cursor:        EQU 30  ; move to 0,0
+040000                   0061 
+040000                   0062 ESC_character           EQU 1Bh ; Escape
+040000                   0063 
+040000                   0064     ORG $040000
+040000                   0065 
+040000 C3 83 00 04       0066     jp  start
+040004                   0067 
+040004 FF FF FF FF FF FF 0068     .align 64
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+       FF FF FF FF FF FF 
+040040                   0069     ; MOS Header
+040040 4D 4F 53 00 01    0070     db "MOS",0,1
+040045                   0071 
+040045                   0072 vdu_disable_cursor:
+040045                   0073     ;VDU 23, 1, 0
+040045 17 01 00          0074     db 23,1,0
+040048                   0075 
+040048                   0076 vdu_time_position:
+040048                   0077     ;VDU 31, x, y: TAB(x, y)
+040048 1F 28 00          0078     db 31, 40,0
+04004B                   0079 
+04004B                   0080 vdu_key_position:
+04004B                   0081     ;VDU 31, x, y: TAB(x, y)
+04004B 1F 00 04          0082     db 31, 0,4
+04004E                   0083 
+04004E                   0084 ; ************************************************
+04004E                   0085 ; ************************************************
+04004E                   0086 ; print_hex
+04004E                   0087 ;
+04004E                   0088 ; print the accumulator as a hex to the screen
+04004E                   0089 ; ************************************************
+04004E                   0090 ; ************************************************
+04004E                   0091 
+04004E                   0092 hex_buffer:
+04004E 00 00             0093     db 0,0
+040050                   0094 
+040050                   0095 print_hex:
+040050 F5                0096     push af		    ; Save A once
+040051                   0097 
+040051 F5                0098     push af          ; Save A again
+040052                   0099 
+040052                   0100     ; first nibble
+040052 E6 F0             0101     and a,0xF0
+040054 1F                0102     rra
+040055 1F                0103     rra
+040056 1F                0104     rra
+040057 1F                0105     rra
+040058 FE 0A             0106     cp a,$0A
+04005A 30 04             0107     jr nc, ten_or_more
+04005C                   0108 
+04005C                   0109 ;less_than_ten:
+04005C C6 30             0110     add a,'0'
+04005E 18 02             0111     jr store_top_nibble
+040060                   0112 
+040060                   0113 ten_or_more:
+040060 C6 37             0114     add a,'A'-0x0A
+040062                   0115 
+040062                   0116 store_top_nibble:
+040062 32 4E 00 04       0117     ld (hex_buffer), a
+040066                   0118 
+040066 F1                0119     pop af		; Get back A
+040067 E6 0F             0120     and $0F
+040069 FE 0A             0121     cp  a,$0A
+04006B 30 04             0122     jr nc, ten_or_more2
+04006D                   0123 
+04006D                   0124 ; less_than_ten:
+04006D C6 30             0125     add a,'0'
+04006F 18 02             0126     jr store_bottom_nibble
+040071                   0127 
+040071                   0128 ten_or_more2:
+040071 C6 37             0129     add a,'A'-0x0A
+040073                   0130 
+040073                   0131 store_bottom_nibble:
+040073 32 4F 00 04       0132     ld (hex_buffer+1),a
+040077                   0133 
+040077 21 4E 00 04       0134     ld hl, hex_buffer
+04007B 01 02 00 00       0135     ld bc, 2
+04007F 5B DF             0136     rst.lil 0x18
+040081 F1                0137     pop af		; Restore A
+040082                   0138 
+040082 C9                0139     ret
+040083                   0140 
+040083                   0141 ; ******************************************************************
+040083                   0142 
+040083                   0143 start:
+040083 F5                0144     push af
+040084 C5                0145     push bc
+040085 D5                0146     push de
+040086 DD E5             0147     push ix
+040088 FD E5             0148     push iy
+04008A                   0149 
+04008A                   0150     ; clear the screen
+04008A                   0151 
+04008A 3E 0C             0152     ld  a, vdu_clear        ; clear screen
+04008C 5B D7             0153     rst.lil 0x10
+04008E                   0154 
+04008E 3E 0A             0155     ld  a, 10               ; move cursor down
+040090 5B D7             0156     rst.lil 0x10
+040092                   0157 
+040092                   0158     ; send the instructions
+040092                   0159 
+040092 21 28 01 04       0160     ld  hl,instruction_str
+040096 01 00 00 00       0161     ld  bc, 0               ; bc = number of characters to print if non-zero
+04009A 3E 00             0162     ld  a,  0               ; if bc is zero, use the character in a as a delimiter to stop printing
+04009C 5B DF             0163     rst.lil 0x18            ; Output a stream of characters to the VPD (MOS 1.03 or above)
+04009E                   0164 
+04009E                   0165     ; disable the cursor
+04009E                   0166 
+04009E 21 45 00 04       0167     ld  hl, vdu_disable_cursor
+0400A2 01 03 00 00       0168     ld  bc, 3
+0400A6 5B DF             0169     rst.lil 0x18
+0400A8                   0170 
+0400A8                   0171     ; determine the seconds counter
+0400A8                   0172 
+0400A8 3E 08             0173     ld  a, mos_sysvars          ; Fetch a pointer to the system variables
+0400AA 5B CF             0174 	rst.lil	0x08                ; Execute a MOS command
+0400AC DD 4E 1F          0175     ld c, (IX + sysvar_rtc + 5) ; get the seconds
+0400AF 0D                0176     dec c                       ; make sure it's different and can't be the same if it increments
+0400B0                   0177 
+0400B0                   0178 repeat:
+0400B0                   0179 
+0400B0                   0180     ; remember the current state of C
+0400B0                   0181 
+0400B0 C5                0182     push bc
+0400B1                   0183 
+0400B1                   0184     ;  get the system variables pointer
+0400B1                   0185 
+0400B1 3E 08             0186     ld  a, mos_sysvars      ; Fetch a pointer to the system variables
+0400B3 5B CF             0187 	rst.lil	0x08            ; Execute a MOS command
+0400B5                   0188 
+0400B5                   0189     ; determine if the user has pressed a key
+0400B5                   0190 
+0400B5 DD 7E 05          0191     ld	a, (IX + sysvar_keyascii)
+0400B8 28 24             0192     jr  z, check_seconds    ; zero means no key
+0400BA                   0193 
+0400BA                   0194     ; get the key that is waiting
+0400BA                   0195 
+0400BA 3E 00             0196     ld  a, mos_getkey
+0400BC 5B CF             0197     rst.lil	0x08            ; Execute a MOS command
+0400BE                   0198 
+0400BE FE 1B             0199     cp 1Bh
+0400C0 28 4D             0200     jr z, done
+0400C2                   0201 
+0400C2 57                0202     ld  d, a
+0400C3                   0203 
+0400C3 21 4B 00 04       0204     ld  hl, vdu_key_position
+0400C7 01 03 00 00       0205     ld  bc, 3
+0400CB 5B DF             0206     rst.lil 0x18
+0400CD                   0207 
+0400CD 21 63 01 04       0208     ld  hl,answer_str
+0400D1 01 00 00 00       0209     ld  bc, 0               ; bc = number of characters to print if non-zero
+0400D5 3E 00             0210     ld  a,  0               ; if bc is zero, use the character in a as a delimiter to stop printing
+0400D7 5B DF             0211     rst.lil 0x18            ; Output a stream of characters to the VPD (MOS 1.03 or above)
+0400D9                   0212 
+0400D9 7A                0213     ld a, d
+0400DA                   0214 
+0400DA                   0215     ; a, The keycode of the character pressed
+0400DA                   0216 
+0400DA CD 50 00 04       0217     call print_hex
+0400DE                   0218 
+0400DE                   0219 check_seconds:
+0400DE                   0220 
+0400DE C1                0221     pop bc      ; get the last value of seconds
+0400DF                   0222 
+0400DF                   0223     ;  get the current value of seconds
+0400DF                   0224 
+0400DF DD 7E 1F          0225     ld a, (IX + sysvar_rtc + 5) ; second
+0400E2 B9                0226     cp c                        ; is it the same as previous seconds?
+0400E3 28 CB             0227     jr z, repeat                ; if it is, nothing to do
+0400E5                   0228 
+0400E5                   0229 get_time:
+0400E5                   0230 
+0400E5                   0231     ; Seconds is different, than previously must display time
+0400E5                   0232 
+0400E5                   0233     ; move the cursor
+0400E5                   0234 
+0400E5 21 48 00 04       0235     ld  hl, vdu_time_position
+0400E9 01 03 00 00       0236     ld  bc, 3
+0400ED 5B DF             0237     rst.lil 0x18
+0400EF                   0238 
+0400EF                   0239     ; display the time
+0400EF                   0240     ;
+0400EF                   0241     ; +0: Year (offset from 1980, so 1989 is 9)
+0400EF                   0242     ; +1: Month (1 to 12)
+0400EF                   0243     ; +2: Day of Month (1 to 31)
+0400EF                   0244     ; +3: Hour (0 to 23)
+0400EF                   0245     ; +4: Minute (0 to 59)
+0400EF                   0246     ; +5: Second (0 to 59)
+0400EF                   0247 
+0400EF DD 7E 1D          0248     ld a, (IX + sysvar_rtc + 3) ; hour
+0400F2 CD 50 00 04       0249     call print_hex
+0400F6 3E 3A             0250     ld a, ':'
+0400F8 5B D7             0251     rst.lil 0x10
+0400FA DD 7E 1E          0252     ld a, (IX + sysvar_rtc + 4) ; minute
+0400FD CD 50 00 04       0253     call print_hex
+040101 3E 3A             0254     ld a, ':'
+040103 5B D7             0255     rst.lil 0x10
+040105 DD 7E 1F          0256     ld a, (IX + sysvar_rtc + 5) ; second
+040108 CD 50 00 04       0257     call print_hex
+04010C                   0258 
+04010C                   0259     ; remember what 'seconds' was so we can check if we
+04010C                   0260     ; need to update time
+04010C                   0261 
+04010C 4F                0262     ld c, a     ; transfer seconds in a to c
+04010D 18 A1             0263     jr repeat
+04010F                   0264 
+04010F                   0265 done:
+04010F                   0266 
+04010F 21 7D 01 04       0267     ld  hl, done_str
+040113 01 00 00 00       0268     ld  bc, 0
+040117 3E 00             0269     ld  a,  0
+040119 5B DF             0270     rst.lil 0x18
+04011B                   0271 
+04011B C1                0272     pop bc  ; this was used to save seconds
+04011C                   0273 
+04011C FD E1             0274     pop iy
+04011E DD E1             0275     pop ix
+040120 D1                0276     pop de
+040121 C1                0277     pop bc
+040122 F1                0278     pop af
+040123                   0279 
+040123 21 00 00 00       0280     ld  hl, 0
+040127                   0281 
+040127 C9                0282     ret
+040128                   0283 
+040128                   0284 instruction_str:
+040128 50 72 65 73 73 20 0285     db "Press ESC to quit or press a key to see display that key\r\n",0
+       45 53 43 20 74 6F 
+       20 71 75 69 74 20 
+       6F 72 20 70 72 65 
+       73 73 20 61 20 6B 
+       65 79 20 74 6F 20 
+       73 65 65 20 64 69 
+       73 70 6C 61 79 20 
+       74 68 61 74 20 6B 
+       65 79 0D 0A 00    
+040163                   0286 
+040163                   0287 answer_str:
+040163 54 68 65 20 6B 65 0288     db "The key you pressed was: ",0
+       79 20 79 6F 75 20 
+       70 72 65 73 73 65 
+       64 20 77 61 73 3A 
+       20 00             
+04017D                   0289 
+04017D                   0290 done_str:
+04017D 0D 0A 44 6F 6E 65 0291     db "\r\nDone."
+       2E                
+040184                   0292 return_str:
+040184 0D 0A 00          0293     db "\r\n",0
+040187                   0294 
+040187                   0295 
+040187                   0296 
